@@ -1,0 +1,26 @@
+- name: Install ifconfig,vim
+  hosts: mikrok8s
+  become: yes
+  tasks:
+    - name: Ensure apt repository is up-to-date
+      apt:
+        update_cache: yes
+
+    - name: Install Vim & net-tools packages
+      apt:
+        name:
+          - vim
+          - net-tools
+        state: present
+
+    - name: Install microk8s
+      ansible.builtin.shell:
+          cmd: snap install microk8s --classic
+
+    - name: Enable cgroup memory
+      ansible.builtin.shell:
+        cmd: grep "cgroup_enable=memory" /boot/firmware/cmdline.txt  || echo -n " cgroup_enable=memory" >> /boot/firmware/cmdline.txt
+
+    - name: Set 1 cgroup memory
+      ansible.builtin.shell:
+        cmd: grep "cgroup_memory=1" /boot/firmware/cmdline.txt  || echo -n " cgroup_memory=1" >> /boot/firmware/cmdline.txt
