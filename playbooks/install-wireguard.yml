@@ -1,0 +1,23 @@
+---
+- name: Install WireGuard on racknerd-micro-1
+  hosts: racknerd-micro-1
+  become: yes
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install WireGuard
+      apt:
+        name: wireguard
+        state: present
+
+    - name: Check if WireGuard is installed
+      command: wg --version
+      register: wg_version
+      changed_when: false
+
+    - name: Display WireGuard version
+      debug:
+        msg: "WireGuard installed: {{ wg_version.stdout }}"

@@ -1,0 +1,65 @@
+---
+- name: Deploy Keycloak on Raspberry Pi 4
+  hosts: rpi4
+  become: yes
+  vars:
+    keycloak_dir: /opt/keycloak
+    compose_file: docker-compose.yml
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+          - python3-pip
+        state: present
+        update_cache: yes
+
+    - name: Install Docker SDK for Python
+      pip:
+        name: docker
+        state: present
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create Keycloak directory
+      file:
+        path: "{{ keycloak_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy docker-compose.yml to target
+      copy:
+        src: ../services/keycloak/docker-compose.yml
+        dest: "{{ keycloak_dir }}/{{ compose_file }}"
+        mode: '0644'
+
+    - name: Pull Docker images
+      docker_compose:
+        project_src: "{{ keycloak_dir }}"
+        pull: yes
+      register: pull_output
+
+    - name: Start Keycloak services
+      docker_compose:
+        project_src: "{{ keycloak_dir }}"
+        state: present
+      register: output
+
+    - name: Wait for Keycloak to be ready
+      uri:
+        url: "http://{{ ansible_host }}:8082/health/ready"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 30
+      delay: 10
+
+    - name: Display service status
+      debug:
+        msg: "Keycloak is running at http://{{ ansible_host }}:8082"

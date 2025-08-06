@@ -1,0 +1,7 @@
+---
+- name: Apply common configuration to all hosts
+  hosts: edges
+  become: true
+  roles:
+    - common
+    - docker

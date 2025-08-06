@@ -1,0 +1,41 @@
+---
+- name: Deploy Keycloak to rpi4
+  hosts: rpi4
+  become: true
+  vars:
+    keycloak_dir: /home/rsergeychik/nutricalc/keycloak
+  tasks:
+    - name: Create keycloak directory on remote host
+      file:
+        path: "{{ keycloak_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy Keycloak configuration directory
+      synchronize:
+        src: ../services/keycloak/
+        dest: "{{ keycloak_dir }}"
+        delete: yes
+        recursive: yes
+        rsync_opts:
+          - "--exclude=.DS_Store"
+          - "--exclude=*.swp"
+
+    - name: Set proper permissions for Keycloak files
+      file:
+        path: "{{ keycloak_dir }}"
+        state: directory
+        recurse: yes
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Set execute permission on directories
+      command: find {{ keycloak_dir }} -type d -exec chmod 755 {} \;
+      changed_when: false
+
+    - name: Start service
+      ansible.builtin.shell: |
+        docker compose up -d
+      args:
+        chdir: "{{ keycloak_dir }}"
