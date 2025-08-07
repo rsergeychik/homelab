@@ -1,6 +1,6 @@
 ---
 - name: Apply common configuration to all hosts
-  hosts: edges
+  hosts: gateways
   become: true
   roles:
     - common
