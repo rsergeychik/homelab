@@ -7,5 +7,13 @@
       - vim
       - curl
       - htop
+      - python3-pip
+      - net-tools
+      - ufw
     state: present
     update_cache: yes
+
+- name: Ensure the 'requests' pip package is installed
+  ansible.builtin.pip:
+    name: requests
+    state: present

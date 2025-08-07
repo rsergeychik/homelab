@@ -1,3 +1,17 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for caddy
+
+
+- name: Copy files directory to Caddy app directory
+  ansible.builtin.copy:
+    src: .
+    dest: "{{ app_dir }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart Caddy service
+  community.docker.docker_compose_v2:
+    project_src: "{{ app_dir }}"
+    pull: missing

@@ -1,0 +1,31 @@
+{
+      servers {
+               trusted_proxies static private_ranges
+               client_ip_headers X-Forwarded-For X-Real-IP
+       }
+}
+
+(admin_redir) {
+       @admin {
+               path /admin*
+               not remote_ip private_ranges
+       }
+       redir @admin /
+}
+
+vault.catocat.org {
+  #log {
+  #  level INFO
+  #  output file {$LOG_FILE} {
+  #    roll_size 10MB
+  #    roll_keep 10
+  #  }
+  #}
+
+  tls equidesp@gmail.com
+  encode zstd gzip
+  import admin_redir
+  reverse_proxy 10.10.0.2:8081 {
+       header_up X-Real-IP {remote_host}
+  }
+}
