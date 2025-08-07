@@ -1,0 +1,2 @@
+wg_interface: wg0
+wg_listen_port: 51820

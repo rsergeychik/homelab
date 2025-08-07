@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for wireguard-common
+- name: Install WireGuard packages
+  apt:
+    name:
+      - wireguard
+      - wireguard-tools
+    state: present
+    update_cache: true

@@ -1,0 +1,7 @@
+---
+- name: Apply common configuration to all hosts
+  hosts: wg_clients
+  become: true
+  roles:
+    - common
+    - wireguard-client

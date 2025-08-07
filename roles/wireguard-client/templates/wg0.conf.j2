@@ -1,0 +1,12 @@
+# Configuration managed by Ansible. DO NOT EDIT MANUALLY.
+
+[Interface]
+Address = {{ wg_client_address }}
+PrivateKey = {{ wg_client_private_key }}
+
+# --- Peer: {{ wg_server_endpoint }}
+[Peer]
+PublicKey = {{ wg_server_public_key }}
+AllowedIPs = {{ wg_server_allowed_ips }}
+Endpoint = {{ wg_server_endpoint }}
+PersistentKeepalive = {{ wg_persistent_keepalive }}

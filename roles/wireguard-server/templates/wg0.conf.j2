@@ -1,0 +1,14 @@
+# Configuration managed by Ansible. DO NOT EDIT MANUALLY.
+
+[Interface]
+Address = {{ wg_server_address }}
+ListenPort = {{ wg_listen_port }}
+PrivateKey = {{ wg_server_private_key }}
+
+{% for peer in wg_peers %}
+
+# --- Peer: {{ peer.name }}
+[Peer]
+PublicKey = {{ peer.public_key }}
+AllowedIPs = {{ peer.allowed_ips }}
+{% endfor %}

@@ -1,0 +1,2 @@
+wg_persistent_keepalive: 25
+wg_interface: wg0
