@@ -29,3 +29,7 @@ vault.catocat.org {
        header_up X-Real-IP {remote_host}
   }
 }
+
+immich.catocat.org {
+    reverse_proxy http://10.10.0.3:2283
+}

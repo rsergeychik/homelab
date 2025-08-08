@@ -4,14 +4,16 @@
 - name: Allow incoming traffic based on combined rules
   become: true
   when: ufw_enabled | default(false)
-  ansible.builtin.ufw:
-    rule: allow
-    port: "{{ item.port }}"
-    proto: "{{ item.proto }}"
-    comment: "{{ item.comment | default(omit) }}"
-  loop: "{{ base_ufw_rules + extra_ufw_rules }}"
+  block:
+    - name: Setup UFW rules
+      ansible.builtin.ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+        comment: "{{ item.comment | default(omit) }}"
+      loop: "{{ base_ufw_rules + extra_ufw_rules }}"
   notify: Reload UFW
 
-- name: Enable and start UFW
+- name: Set UFW state
   ansible.builtin.ufw:
     state: "{{ 'enabled' if ufw_enabled | default(false) else 'disabled' }}"

@@ -15,3 +15,4 @@
   community.docker.docker_compose_v2:
     project_src: "{{ app_dir }}"
     pull: missing
+    state: restarted
