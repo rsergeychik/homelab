@@ -17,3 +17,8 @@
   ansible.builtin.pip:
     name: requests
     state: present
+
+- name: Setup UFW
+  ansible.builtin.include_role:
+    name: firewall
+#  when: ufw_rules | default(false)

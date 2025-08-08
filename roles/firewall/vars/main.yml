@@ -1,3 +1,11 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # vars file for firewall
+ufw_enabled: false
+
+base_ufw_rules:
+  - rule: allow
+    name: OpenSSH
+    comment: 'Allow all SSH connections'
+
+extra_ufw_rules: []

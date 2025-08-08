@@ -1,26 +1,17 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for firewall
-- name: Allow SSH connections (IMPORTANT)
+- name: Allow incoming traffic based on combined rules
+  become: true
+  when: ufw_enabled | default(false)
   ansible.builtin.ufw:
     rule: allow
-    name: OpenSSH
-    comment: 'Allow all SSH connections'
-
-- name: Allow HTTP traffic on port 80
-  ansible.builtin.ufw:
-    rule: allow
-    port: '80'
-    proto: tcp
-    comment: 'Allow HTTP traffic'
-
-- name: Allow HTTPS traffic on port 443
-  ansible.builtin.ufw:
-    rule: allow
-    port: '443'
-    proto: tcp
-    comment: 'Allow HTTPS traffic'
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    comment: "{{ item.comment | default(omit) }}"
+  loop: "{{ base_ufw_rules + extra_ufw_rules }}"
+  notify: Reload UFW
 
 - name: Enable and start UFW
   ansible.builtin.ufw:
-    state: enabled
+    state: "{{ 'enabled' if ufw_enabled | default(false) else 'disabled' }}"

@@ -1,0 +1,5 @@
+ufw_enabled: true
+ufw_http_rules:
+  - { port: 80, proto: tcp, comment: 'Allow HTTP' }
+  - { port: 443, proto: tcp, comment: 'Allow HTTPS' }
+extra_ufw_rules: "{{ extra_ufw_rules + http_rules }}"

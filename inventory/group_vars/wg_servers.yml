@@ -1,2 +1,7 @@
 wg_interface: wg0
 wg_listen_port: 51820
+
+ufw_enabled: true
+ufw_wg_rules:
+  - { port: 51820, proto: udp, comment: 'Allow WireGuard traffic' }
+extra_ufw_rules: "{{ extra_ufw_rules + http_rules }}"

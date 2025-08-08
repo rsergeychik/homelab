@@ -16,5 +16,5 @@ wg_peers:
     public_key: 5sF9J73nLRZyDuC3X7gpwkcGbjxOaO24vSOeHEnxOVI=
     allowed_ips: "10.10.0.2/32"
   - name: "immich"
-    public_key: Xix/RmMhfl/Di8+zijXffm6WguFrV/b+MrsP21nM2AE=
+    public_key: 9e21P0QXpgHutIAkiLzF4trSNPg/7S2FwfB/SE23lDM=
     allowed_ips: "10.10.0.3/32"
