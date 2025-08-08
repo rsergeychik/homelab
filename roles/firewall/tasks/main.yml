@@ -1,18 +1,16 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for firewall
-- name: Allow incoming traffic based on combined rules
+- name: Setup UFW rules
   become: true
   when: ufw_rules is defined and ufw_rules | length > 0
-  block:
-    - name: Setup UFW rules
-      ansible.builtin.ufw:
-        rule: "{{ item.rule }}"
-        port: "{{ item.port | default(omit) }}"
-        proto: "{{ item.proto | default(omit) }}"
-        name: "{{ item.name | default(omit) }}"
-        comment: "{{ item.comment | default(omit) }}"
-      loop: "{{ ufw_rules }}"
+  ansible.builtin.ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port | default(omit) }}"
+    proto: "{{ item.proto | default(omit) }}"
+    name: "{{ item.name | default(omit) }}"
+    comment: "{{ item.comment | default(omit) }}"
+  loop: "{{ ufw_rules }}"
   notify: Reload UFW
 
 - name: Set UFW state
