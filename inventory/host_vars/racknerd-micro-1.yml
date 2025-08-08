@@ -15,3 +15,6 @@ wg_peers:
   - name: "rpi4"
     public_key: 5sF9J73nLRZyDuC3X7gpwkcGbjxOaO24vSOeHEnxOVI=
     allowed_ips: "10.10.0.2/32"
+  - name: "immich"
+    public_key: Xix/RmMhfl/Di8+zijXffm6WguFrV/b+MrsP21nM2AE=
+    allowed_ips: "10.10.0.3/32"
