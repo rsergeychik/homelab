@@ -1,6 +1,23 @@
 ansible_host: 198.46.189.252
 ansible_user: root
 
+ufw_rules:
+  - rule: allow
+    name: OpenSSH
+    comment: 'Allow all SSH connections'
+  - rule: allow
+    port: 80
+    proto: tcp
+    comment: 'Allow HTTP'
+  - rule: allow
+    port: 443
+    proto: tcp
+    comment: 'Allow HTTPS'
+  - rule: allow
+    port: 51820
+    proto: udp
+    comment: 'Allow WireGuard traffic'
+
 wg_server_address: "10.10.0.1/24"
 wg_server_private_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
