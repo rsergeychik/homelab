@@ -2,16 +2,5 @@
 - name: Apply common configuration to all hosts
   hosts: all
   become: true
-  pre_tasks:
-    - name: Ensure venv and dependencies exist on special_host
-      when: custom_ansible_venv_path | default(false)
-      block:
-        - name: Ensure python3-venv is installed
-          become: yes
-          ansible.builtin.package:
-            name: python3-venv
-            state: present
-          vars:
-            ansible_python_interpreter: "{{ native_python_interpreter }}"
   roles:
     - common

@@ -35,3 +35,6 @@ wg_peers:
   - name: "immich"
     public_key: 9e21P0QXpgHutIAkiLzF4trSNPg/7S2FwfB/SE23lDM=
     allowed_ips: "10.10.0.3/32"
+  - name: "rpi5-2"
+    public_key: b9nvNxFqIvcARjQ8X3dzG5gTYeeybEZyoOfH6WhuuFg=
+    allowed_ips: "10.10.0.4/32"
