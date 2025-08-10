@@ -4,6 +4,4 @@
   become: true
   roles:
     - common
-    - firewall
-    - docker
     - caddy

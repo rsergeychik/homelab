@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for openobserve
+openobserve_data_path: ./data/openobserve
+openobserve_dir: /etc/openobserve

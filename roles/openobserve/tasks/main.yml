@@ -1,0 +1,25 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for openobserve
+- name: Create Openobserve directory
+  ansible.builtin.file:
+    path: "{{ openobserve_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Generate Docker compose file from template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ openobserve_dir }}/docker-compose.yml"
+
+- name: Restart Openobserve service
+  community.docker.docker_compose_v2:
+    project_src: "{{ openobserve_dir }}"
+    pull: missing
+    state: restarted
+
+- name: Start Openobserve service
+  community.docker.docker_compose_v2:
+    project_src: "{{ openobserve_dir }}"
+    pull: missing
+    state: present

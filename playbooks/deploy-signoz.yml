@@ -1,0 +1,7 @@
+---
+- name: Deploy OpenObserve
+  hosts: signoz_servers
+  become: true
+  roles:
+    - common
+    - signoz

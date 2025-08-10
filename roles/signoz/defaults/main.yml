@@ -1,0 +1,9 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for signoz
+
+# SigNoz repository configuration
+signoz_repo_url: "https://github.com/SigNoz/signoz.git"
+signoz_repo_branch: "main"
+signoz_repo_dest: "/opt/signoz"
+signoz_deploy_dir: "{{ signoz_repo_dest }}/deploy/docker"

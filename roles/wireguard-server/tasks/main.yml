@@ -7,8 +7,8 @@
     dest: /etc/wireguard/{{ wg_interface }}.conf
     owner: root
     group: root
-    mode: '0600' # Private keys require strict permissions
-  notify: Restart WireGuard # Handler to restart the service on change
+    mode: '0600'
+  notify: Restart WireGuard
 
 - name: Ensure WireGuard service is enabled and started
   ansible.builtin.systemd:

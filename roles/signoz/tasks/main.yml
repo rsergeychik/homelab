@@ -1,0 +1,47 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for signoz
+
+- name: Ensure destination directory exists
+  ansible.builtin.file:
+    path: "{{ signoz_repo_dest | dirname }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Check if SigNoz repository already exists
+  ansible.builtin.stat:
+    path: "{{ signoz_repo_dest }}"
+  register: signoz_repo_stat
+
+- name: Clone SigNoz repository (shallow, only if not exists)
+  ansible.builtin.git:
+    repo: "{{ signoz_repo_url }}"
+    dest: "{{ signoz_repo_dest }}"
+    version: "{{ signoz_repo_branch }}"
+    depth: 1
+    force: no
+  become: yes
+  when: not signoz_repo_stat.stat.exists
+
+- name: Verify deploy directory exists
+  ansible.builtin.stat:
+    path: "{{ signoz_deploy_dir }}"
+  register: deploy_dir_stat
+
+- name: Fail if deploy directory doesn't exist
+  ansible.builtin.fail:
+    msg: "Deploy directory {{ signoz_deploy_dir }} not found after cloning repository"
+  when: not deploy_dir_stat.stat.exists
+
+- name: Restart Signoz service
+  community.docker.docker_compose_v2:
+    project_src: "{{ signoz_deploy_dir }}"
+    pull: missing
+    state: restarted
+
+- name: Start Signoz service
+  community.docker.docker_compose_v2:
+    project_src: "{{ signoz_deploy_dir }}"
+    pull: missing
+    state: present

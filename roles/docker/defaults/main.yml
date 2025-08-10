@@ -1,3 +1,23 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # defaults file for docker
+
+old_docker_packages:
+  - docker.io
+  - docker-doc
+  - docker-compose
+  - docker-compose-v2
+  - podman-docker
+  - containerd
+  - runc
+# Packages to be installed
+docker_install_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+docker_arch_map:
+  aarch64: arm64
+  x86_64: amd64
+  armv7l: armhf
