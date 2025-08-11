@@ -1,0 +1,39 @@
+receivers:
+  hostmetrics:
+    collection_interval: 30s
+    root_path: /hostfs
+    scrapers:
+      cpu:
+      load:
+      memory:
+      disk:
+      filesystem:
+      network:
+      paging:
+      processes:
+
+processors:
+  resource:
+    attributes:
+      - key: host.name
+        action: upsert
+        value: "{{ inventory_hostname }}"
+  batch:
+    timeout: 10s
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 75
+    spike_limit_percentage: 15
+
+exporters:
+  otlp:
+    endpoint: "{{ otel_signoz_address }}"
+    tls:
+      insecure: true # Set to false if you have configured TLS on SigNoz
+
+service:
+  pipelines:
+    metrics:
+      receivers: [hostmetrics]
+      processors: [resource, memory_limiter, batch]
+      exporters: [otlp]

@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for otel-collector
+otel_signoz_address: localhost:4317
+otel_collector_dir: /etc/otel-collector

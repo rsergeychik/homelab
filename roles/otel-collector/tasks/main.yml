@@ -1,0 +1,35 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for otel-collector
+- name: Create Otel collector directory
+  ansible.builtin.file:
+    path: "{{ otel_collector_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Stop Otel Collector service
+  community.docker.docker_compose_v2:
+    project_src: "{{ otel_collector_dir }}"
+    state: stopped
+
+- name: Generate Docker compose file from template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ otel_collector_dir }}/docker-compose.yml"
+
+- name: Generate Otel collector confige from template
+  ansible.builtin.template:
+    src: otel-collector-config.yml.j2
+    dest: "{{ otel_collector_dir }}/otel-collector-config.yml"
+#
+#- name: Restart Otel Collector service
+#  community.docker.docker_compose_v2:
+#    project_src: "{{ otel_collector_dir }}"
+#    pull: missing
+#    state: restarted
+
+- name: Start Otel Collector service
+  community.docker.docker_compose_v2:
+    project_src: "{{ otel_collector_dir }}"
+    pull: missing
+    state: present

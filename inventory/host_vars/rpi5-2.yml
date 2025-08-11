@@ -16,3 +16,4 @@ wg_client_private_key: !vault |
   3661373366363161636462636339373031303332303530646364
 
 signoz_repo_dest: /media/nvme/signoz
+otel_signoz_address: localhost:4317

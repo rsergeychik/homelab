@@ -1,0 +1,7 @@
+---
+- name: Deploy OpenObserve
+  hosts: all
+  become: true
+  roles:
+    - common
+    - otel-collector
