@@ -15,16 +15,17 @@ wg_client_private_key: !vault |
   32306239303234323666643739633365613533356232306561336365343566316466336261373666
   6431303366343462376661646336626339653136313032393865
 
-otel_collector_extra_receivers:
-  prometheus:
-    config:
-      scrape_configs:
-        - job_name: 'immich_api'
-          scrape_interval: 15s
-          static_configs:
-            - targets: ['localhost:8081']
+otel_collector_config_overrides:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'immich_api'
+            scrape_interval: 15s
+            static_configs:
+              - targets: ['localhost:8081']
 
-        - job_name: 'immich_microservices'
-          scrape_interval: 15s
-          static_configs:
-            - targets: ['localhost:8082']
+          - job_name: 'immich_microservices'
+            scrape_interval: 15s
+            static_configs:
+              - targets: ['localhost:8082']

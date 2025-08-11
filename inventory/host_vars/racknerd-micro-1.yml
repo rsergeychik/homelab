@@ -38,3 +38,26 @@ wg_peers:
   - name: "rpi5-2"
     public_key: b9nvNxFqIvcARjQ8X3dzG5gTYeeybEZyoOfH6WhuuFg=
     allowed_ips: "10.10.0.4/32"
+
+otel_collector_config_overrides:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'caddy'
+            scrape_interval: 15s
+            static_configs:
+              - targets: [ 'localhost:2019' ]
+  service:
+    pipelines:
+      traces:
+        receivers:
+          - otlp
+        exporters:
+          - otlp
+        processors:
+          - batch

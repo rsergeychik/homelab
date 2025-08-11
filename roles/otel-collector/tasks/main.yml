@@ -7,6 +7,15 @@
     state: directory
     mode: '0755'
 
+- name: Combine default config with host-specific overrides
+  ansible.builtin.set_fact:
+    # 2. The same combine logic creates a new fact for this host
+    final_app_config: >-
+      {{
+        otel_collector_config |
+        combine(otel_collector_config_overrides | default({}), recursive=True)
+      }}
+
 - name: Stop Otel Collector service
   community.docker.docker_compose_v2:
     project_src: "{{ otel_collector_dir }}"
@@ -21,12 +30,6 @@
   ansible.builtin.template:
     src: otel-collector-config.yml.j2
     dest: "{{ otel_collector_dir }}/otel-collector-config.yml"
-#
-#- name: Restart Otel Collector service
-#  community.docker.docker_compose_v2:
-#    project_src: "{{ otel_collector_dir }}"
-#    pull: missing
-#    state: restarted
 
 - name: Start Otel Collector service
   community.docker.docker_compose_v2:

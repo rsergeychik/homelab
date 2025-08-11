@@ -1,39 +1,7 @@
 ---
-- name: Deploy Caddy to racknerd-micro-1
-  hosts: racknerd-micro-1
+- name: Apply common configuration to all hosts
+  hosts: gateways
   become: true
-  tasks:
-    - name: Create caddy directory on remote host
-      file:
-        path: /opt/caddy
-        state: directory
-        mode: '0755'
-
-    - name: Copy Caddy configuration directory
-      synchronize:
-        src: ../services/caddy/
-        dest: /opt/caddy/
-        delete: yes
-        recursive: yes
-        rsync_opts:
-          - "--exclude=.DS_Store"
-          - "--exclude=*.swp"
-
-    - name: Set proper permissions for Caddy files
-      file:
-        path: /opt/caddy
-        state: directory
-        recurse: yes
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Set execute permission on directories
-      command: find /opt/caddy -type d -exec chmod 755 {} \;
-      changed_when: false
-
-    - name: Start service
-      ansible.builtin.shell: |
-        docker compose up -d
-      args:
-        chdir: /opt/caddy
+  roles:
+    - common
+    - caddy

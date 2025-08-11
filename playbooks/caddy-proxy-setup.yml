@@ -1,7 +1,0 @@
----
-- name: Apply common configuration to all hosts
-  hosts: gateways
-  become: true
-  roles:
-    - common
-    - caddy

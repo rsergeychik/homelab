@@ -2,15 +2,15 @@ services:
   caddy:
     image: caddy:latest
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
     volumes:
       - ./conf:/etc/caddy
       - ./site:/srv
       - caddy_data:/data
       - caddy_config:/config
+    network_mode: "host"
+    environment:
+      OTEL_EXPORTER_OTLP_INSECURE: true
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://localhost:4317
 
 volumes:
   caddy_data:

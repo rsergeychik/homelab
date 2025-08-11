@@ -3,3 +3,45 @@
 # defaults file for otel-collector
 otel_signoz_address: localhost:4317
 otel_collector_dir: /etc/otel-collector
+otel_collector_config:
+  receivers:
+    hostmetrics:
+      collection_interval: 30s
+      root_path: /hostfs
+      scrapers:
+        cpu:
+        disk:
+        filesystem:
+        load:
+        memory:
+        network:
+        paging:
+        processes:
+  processors:
+    batch:
+      timeout: 10s
+    memory_limiter:
+      check_interval: 1s
+      limit_percentage: 75
+      spike_limit_percentage: 15
+    resource:
+      attributes:
+        - action: upsert
+          key: host.name
+          value: "{{ inventory_hostname }}"
+  exporters:
+    otlp:
+      endpoint: "{{ otel_signoz_address }}"
+      tls:
+        insecure: true
+  service:
+    pipelines:
+      metrics:
+        exporters:
+          - otlp
+        processors:
+          - resource
+          - memory_limiter
+          - batch
+        receivers:
+          - hostmetrics

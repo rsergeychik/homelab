@@ -2,23 +2,27 @@
 ---
 # tasks file for caddy
 
+- name: Create Caddy app directory
+  ansible.builtin.file:
+    path: "{{ caddy_app_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Stop Caddy service
+  community.docker.docker_compose_v2:
+    project_src: "{{ caddy_app_dir }}"
+    state: stopped
 
 - name: Copy files directory to Caddy app directory
   ansible.builtin.copy:
     src: .
-    dest: "{{ app_dir }}"
+    dest: "{{ caddy_app_dir }}"
     owner: root
     group: root
     mode: '0644'
 
-- name: Restart Caddy service
-  community.docker.docker_compose_v2:
-    project_src: "{{ app_dir }}"
-    pull: missing
-    state: restarted
-
 - name: Start Caddy service
   community.docker.docker_compose_v2:
-    project_src: "{{ app_dir }}"
+    project_src: "{{ caddy_app_dir }}"
     pull: missing
     state: present

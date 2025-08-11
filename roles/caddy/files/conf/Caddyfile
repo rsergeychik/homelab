@@ -1,8 +1,11 @@
 {
-      servers {
-               trusted_proxies static private_ranges
-               client_ip_headers X-Forwarded-For X-Real-IP
-       }
+    servers {
+        trusted_proxies static private_ranges
+        client_ip_headers X-Forwarded-For X-Real-IP
+    }
+    metrics {
+        per_host
+    }
 }
 
 (admin_redir) {
@@ -14,22 +17,23 @@
 }
 
 vault.catocat.org {
-  #log {
-  #  level INFO
-  #  output file {$LOG_FILE} {
-  #    roll_size 10MB
-  #    roll_keep 10
-  #  }
-  #}
+    tracing {
+        span vault
+    }
 
-  tls equidesp@gmail.com
-  encode zstd gzip
-  import admin_redir
-  reverse_proxy 10.10.0.2:8081 {
-       header_up X-Real-IP {remote_host}
-  }
+    tls equidesp@gmail.com
+    encode zstd gzip
+    import admin_redir
+    reverse_proxy 10.10.0.2:8081 {
+        header_up X-Real-IP {remote_host}
+    }
 }
 
 immich.catocat.org {
+    tracing {
+        span immich
+    }
+    tls equidesp@gmail.com
+    encode zstd gzip
     reverse_proxy http://10.10.0.3:2283
 }
