@@ -1,39 +1,63 @@
-receivers:
-  hostmetrics:
-    collection_interval: 30s
-    root_path: /hostfs
-    scrapers:
-      cpu:
-      load:
-      memory:
-      disk:
-      filesystem:
-      network:
-      paging:
-      processes:
+{# Step 1: Define your base configuration as a variable #}
+{% set otel_collector_base_config = {
+  'receivers': {
+    'hostmetrics': {
+      'collection_interval': '30s',
+      'root_path': '/hostfs',
+      'scrapers': {
+        'cpu': None, 'load': None, 'memory': None, 'disk': None,
+        'filesystem': None, 'network': None, 'paging': None, 'processes': None
+      }
+    }
+  },
+  'processors': {
+    'resource': {
+      'attributes': [
+        {'key': 'host.name', 'action': 'upsert', 'value': inventory_hostname}
+      ]
+    },
+    'batch': {'timeout': '10s'},
+    'memory_limiter': {
+      'check_interval': '1s',
+      'limit_percentage': 75,
+      'spike_limit_percentage': 15
+    }
+  },
+  'exporters': {
+    'otlp': {
+      'endpoint': otel_signoz_address,
+      'tls': {'insecure': True}
+    }
+  },
+  'service': {
+    'pipelines': {
+      'metrics': {
+        'receivers': ['hostmetrics'],
+        'processors': ['resource', 'memory_limiter', 'batch'],
+        'exporters': ['otlp']
+      }
+    }
+  }
+} %}
 
-processors:
-  resource:
-    attributes:
-      - key: host.name
-        action: upsert
-        value: "{{ inventory_hostname }}"
-  batch:
-    timeout: 10s
-  memory_limiter:
-    check_interval: 1s
-    limit_percentage: 75
-    spike_limit_percentage: 15
+{# Step 2: Create a mutable copy to work with #}
+{% set final_config = otel_collector_base_config %}
 
-exporters:
-  otlp:
-    endpoint: "{{ otel_signoz_address }}"
-    tls:
-      insecure: true # Set to false if you have configured TLS on SigNoz
+{# Step 3: Check for and merge the extra receivers #}
+{% if otel_collector_extra_receivers is defined %}
 
-service:
-  pipelines:
-    metrics:
-      receivers: [hostmetrics]
-      processors: [resource, memory_limiter, batch]
-      exporters: [otlp]
+  {# Merge the extra receiver definitions #}
+  {% set combined_receivers = final_config.receivers | combine(otel_collector_extra_receivers) %}
+  {% set _ = final_config.update({'receivers': combined_receivers}) %}
+
+  {# Add the new receiver name(s) to the pipeline #}
+  {% for receiver_name in otel_collector_extra_receivers.keys() %}
+    {% if receiver_name not in final_config.service.pipelines.metrics.receivers %}
+      {% set _ = final_config.service.pipelines.metrics.receivers.append(receiver_name) %}
+    {% endif %}
+  {% endfor %}
+
+{% endif %}
+
+{# Step 4: Render the final merged configuration as YAML #}
+{{ final_config | to_nice_yaml(indent=2) }}
