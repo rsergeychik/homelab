@@ -37,3 +37,38 @@ immich.catocat.org {
     encode zstd gzip
     reverse_proxy http://10.10.0.3:2283
 }
+
+auth.creepy.dev {
+    tracing {
+        span auth
+    }
+    tls equidesp@gmail.com
+    encode zstd gzip
+
+    reverse_proxy 10.10.0.2:8082 {
+        header_up Host {host}
+        header_up X-Forwarded-For {remote_ip}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+keycloak.creepy.dev {
+    tracing {
+        span keycloak
+    }
+    tls equidesp@gmail.com
+    encode zstd gzip
+
+    reverse_proxy 10.10.0.2:8082 {
+        header_up Host {host}
+        header_up X-Forwarded-For {remote_ip}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    tls {
+        client_auth {
+            mode require_and_verify
+            trusted_ca_cert_file /certs/ca.crt
+        }
+    }
+}

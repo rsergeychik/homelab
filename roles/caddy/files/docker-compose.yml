@@ -3,6 +3,7 @@ services:
     image: caddy:latest
     restart: unless-stopped
     volumes:
+      - /root/certs/ca.crt:/certs/ca.crt
       - ./conf:/etc/caddy
       - ./site:/srv
       - caddy_data:/data

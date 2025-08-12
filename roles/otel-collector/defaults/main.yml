@@ -29,6 +29,9 @@ otel_collector_config:
         - action: upsert
           key: host.name
           value: "{{ inventory_hostname }}"
+        - action: upsert
+          key: os.type
+          value: "{{ ansible_os_family }}"
   exporters:
     otlp:
       endpoint: "{{ otel_signoz_address }}"
