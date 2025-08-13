@@ -50,6 +50,7 @@ otel_collector_config_overrides:
         scrape_configs:
           - job_name: 'caddy'
             scrape_interval: 15s
+            metrics_path: /metrics
             static_configs:
               - targets: [ 'localhost:2019' ]
   service:
@@ -57,6 +58,15 @@ otel_collector_config_overrides:
       traces:
         receivers:
           - otlp
+        exporters:
+          - otlp
+        processors:
+          - batch
+          - memory_limiter
+          - resource
+      metrics:
+        receivers:
+          - prometheus
         exporters:
           - otlp
         processors:

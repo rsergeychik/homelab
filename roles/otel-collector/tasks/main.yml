@@ -13,7 +13,8 @@
     final_app_config: >-
       {{
         otel_collector_config |
-        combine(otel_collector_config_overrides | default({}), recursive=True)
+        combine(otel_collector_config_overrides | default({}), recursive=True, list_merge='append') |
+        deep_unique_lists
       }}
 
 - name: Stop Otel Collector service
