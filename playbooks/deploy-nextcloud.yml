@@ -1,0 +1,7 @@
+---
+- name: Apply common configuration to all hosts
+  hosts: nextcloud_servers
+  become: true
+  roles:
+    - common
+    - nextcloud

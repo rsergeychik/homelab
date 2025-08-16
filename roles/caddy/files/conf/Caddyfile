@@ -38,6 +38,15 @@ immich.catocat.org {
     reverse_proxy http://10.10.0.3:2283
 }
 
+nextcloud.catocat.org {
+    tracing {
+        span nextcloud
+    }
+    tls equidesp@gmail.com
+    encode zstd gzip
+    reverse_proxy http://10.10.0.4:8087
+}
+
 auth.creepy.dev {
     tracing {
         span auth
